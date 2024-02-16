@@ -1,0 +1,16 @@
+<div>
+    <div>
+        <label>Enter album id:</label>
+        <input type="text" [(ngModel)]="albumId" (keydown.enter)="loadImagesByAlbum();false"/>
+        <button (click)="loadImagesByAlbum()" [disabled]="albumId < 0">Load</button>
+    </div>
+    <div *ngIf="loading$ | async">loading...</div>
+    <div class="container mt-4 pt-4" *ngIf="images$ | async as images">
+        <h3>List of Images ({{images.length}})</h3>
+        <ul class="list-group mt-4">
+            <li class="list-group-item" *ngFor="let image of images">
+                photo-album {{image.albumId}} [{{image.id}}] {{image.title}}
+            </li>
+        </ul>
+    </div>
+</div>
