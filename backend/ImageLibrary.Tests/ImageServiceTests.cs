@@ -3,8 +3,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ImageLibrary.Domain;
+using ImageLibrary.Domain.Models;
 using ImageLibrary.Domain.Services;
-using ImageLibrary.Models;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -12,9 +13,9 @@ using NUnit.Framework;
 namespace ImageLibrary.Tests
 {
     [TestFixture]
-    public class ImageLibraryClientTests
+    public class ImageServiceTests
     {
-        private IImageLibraryClient _service;
+        private IImageService _service;
         private Mock<IHttpClientFactory> _clientFactoryMock;
 
         [SetUp]
@@ -22,11 +23,11 @@ namespace ImageLibrary.Tests
         {
             _clientFactoryMock = new Mock<IHttpClientFactory>();
             
-            _service = new ImageLibraryClient(_clientFactoryMock.Object, new AppConfig { ImageLibraryApi = "http://testapi" } );
+            _service = new ImageService(_clientFactoryMock.Object, new AppConfig { ImageLibraryApi = "http://testapi" } );
         }
 
         [Test(Description = "Receive data when status is OK")]
-        public async Task GetResponseSuccessfullyTest()
+        public async Task ReceiveData_When_Response_Ok_Test()
         {
             var albumId = 1;
             var data = new List<AlbumImageDTO> {
@@ -61,7 +62,7 @@ namespace ImageLibrary.Tests
         }
 
         [Test(Description = "Receive empty data when status is OK")]
-        public async Task GetEmptyResponseTest()
+        public async Task GetEmpty_When_ResponseIsEmpty_Test()
         {
             var albumId = 1;
             var data = new List<AlbumImageDTO>();
@@ -91,8 +92,8 @@ namespace ImageLibrary.Tests
             Assert.AreEqual(0, data.Count);
         }
 
-        [Test(Description = "Receive data when status is OK")]
-        public async Task ThrowsExceptionIfResponse_IsNotSuccessfiul()
+        [Test(Description = "Throws exception data when response status is bad")]
+        public async Task ThrowsException_IfResponse_IsNotSuccessful_Test()
         {
             var albumId = 1;
             
@@ -115,11 +116,10 @@ namespace ImageLibrary.Tests
                 .Verifiable();
 
             var isException = false;
-
-            var result = Enumerable.Empty<AlbumImageDTO>();
+            
             try
             {
-                result = await _service.GetImagesByAlbumIdAsync(albumId);
+                await _service.GetImagesByAlbumIdAsync(albumId);
             }
             catch
             {

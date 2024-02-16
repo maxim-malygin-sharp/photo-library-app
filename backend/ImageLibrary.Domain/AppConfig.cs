@@ -1,4 +1,4 @@
-﻿namespace ImageLibrary
+﻿namespace ImageLibrary.Domain
 {
     public class AppConfig
     {

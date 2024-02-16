@@ -1,4 +1,4 @@
-﻿namespace ImageLibrary.Models
+﻿namespace ImageLibrary.Domain.Models
 {
     public class AlbumImageDTO
     {

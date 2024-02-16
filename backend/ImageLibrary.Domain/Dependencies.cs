@@ -1,5 +1,4 @@
-﻿
-using ImageLibrary.Domain.Services;
+﻿using ImageLibrary.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImageLibrary.Domain
@@ -10,7 +9,6 @@ namespace ImageLibrary.Domain
         {
             //single instance per every launch
             services.AddSingleton<IImageService, ImageService>();
-            services.AddSingleton<IImageLibraryClient, ImageLibraryClient>();
             services.AddHttpClient();
 
             return services;

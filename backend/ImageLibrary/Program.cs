@@ -1,4 +1,5 @@
 ﻿using ImageLibrary.Domain;
+using ImageLibrary.Domain.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,51 +16,74 @@ namespace ImageLibrary
             var serviceCollection = Configure();
 
             var provider = serviceCollection.BuildServiceProvider();
-            var service = provider.GetService<IImageService>();
 
-            await Execute(service);
+            var service = provider.GetRequiredService<IImageService>();
+
+            await ExecuteAsync(service);
         }
 
-        private static async Task Execute(IImageService service)
+        private static async Task ExecuteAsync(IImageService service)
         {
-            Console.WriteLine("Enter album id:");
-
             try
             {
-                var idString = Console.ReadLine();
-
-                if (!int.TryParse(idString, out var id))
+                if (!TryGetIdFromInput(out var id))
                 {
                     Console.WriteLine("Wrong album id:");
+                    return;
                 }
 
                 var images = await service.GetImagesByAlbumIdAsync(id);
-
-                if (images.Any())
-                {
-                    foreach (var image in images)
-                        Console.WriteLine($"photo-album {id} [{image.Id}] {image.Title}");
-                }
-                else
-                {
-                    Console.WriteLine("No images");
-                }
-
-                Console.ReadLine();
+                ProcessImages(id, images);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error occured during execution: {ex.Message}");
             }
 
         }
 
+        private static void ProcessImages(int id, System.Collections.Generic.IList<Domain.Models.AlbumImageDTO> images)
+        {
+            if (images.Count > 0)
+            {
+                foreach (var image in images)
+                    Console.WriteLine($"photo-album {id} [{image.Id}] {image.Title}");
+            }
+            else
+            {
+                Console.WriteLine("No images");
+            }
+
+            Console.ReadLine();
+        }
+
+        private static bool TryGetIdFromInput(out int id)
+        {
+            Console.WriteLine("Enter album id:");
+
+            var idString = Console.ReadLine();
+
+            if (!int.TryParse(idString, out id))
+            {
+                return false;
+            }
+
+            if (id <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private static IServiceCollection Configure()
         {
             var services = new ServiceCollection();
 
+            var directory = Directory.GetParent(AppContext.BaseDirectory)?.FullName ?? Directory.GetCurrentDirectory();
+
             var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .SetBasePath(directory)
                 .AddJsonFile("appsettings.json")
                 .Build();
 

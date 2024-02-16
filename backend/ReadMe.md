@@ -12,4 +12,4 @@ NUnit test adapter should be already suppplied and tests are avaiable in Test Ex
 3. Run tests
 
 TODO list:
-Need to add mappings between models
+It would be greate to add logging instead of throwing exception in ImageService
