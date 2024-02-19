@@ -1,5 +1,6 @@
 ﻿using ImageLibrary.Domain;
-using ImageLibrary.Domain.Services;
+using ImageLibrary.Domain.Exceptions;
+using ImageLibrary.Domain.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,13 +14,20 @@ namespace ImageLibrary
     {
         static async Task Main(string[] args)
         {
-            var serviceCollection = Configure();
+            try
+            {
+                var serviceCollection = Configure();
 
-            var provider = serviceCollection.BuildServiceProvider();
+                var provider = serviceCollection.BuildServiceProvider();
 
-            var service = provider.GetRequiredService<IImageService>();
+                var service = provider.GetRequiredService<IImageService>();
 
-            await ExecuteAsync(service);
+                await ExecuteAsync(service);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occured during execution: {ex.Message}");
+            }
         }
 
         private static async Task ExecuteAsync(IImageService service)
@@ -35,9 +43,9 @@ namespace ImageLibrary
                 var images = await service.GetImagesByAlbumIdAsync(id);
                 ProcessImages(id, images);
             }
-            catch (Exception ex)
+            catch (ReceivingImageFailedException ex)
             {
-                Console.WriteLine($"Error occured during execution: {ex.Message}");
+                Console.WriteLine($"Receiving images failed: {ex.Message}");
             }
 
         }

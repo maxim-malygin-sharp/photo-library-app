@@ -1,4 +1,5 @@
 ﻿using ImageLibrary.Domain.Services;
+using ImageLibrary.Domain.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ImageLibrary.Domain

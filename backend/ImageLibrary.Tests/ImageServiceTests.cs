@@ -4,8 +4,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ImageLibrary.Domain;
+using ImageLibrary.Domain.Exceptions;
 using ImageLibrary.Domain.Models;
 using ImageLibrary.Domain.Services;
+using ImageLibrary.Domain.Services.Interfaces;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -121,7 +123,7 @@ namespace ImageLibrary.Tests
             {
                 await _service.GetImagesByAlbumIdAsync(albumId);
             }
-            catch
+            catch (ReceivingImageFailedException)
             {
                 isException = true;
             }

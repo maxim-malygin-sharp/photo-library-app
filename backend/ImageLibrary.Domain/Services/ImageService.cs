@@ -1,4 +1,6 @@
-﻿using ImageLibrary.Domain.Models;
+﻿using ImageLibrary.Domain.Exceptions;
+using ImageLibrary.Domain.Models;
+using ImageLibrary.Domain.Services.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace ImageLibrary.Domain.Services
             }
             else
             {
-                throw new Exception($"Couldn't get images response with code: {response.StatusCode} and message: {response.Content}");
+                throw new ReceivingImageFailedException($"Couldn't get images response with code: {response.StatusCode} and message: {response.Content}");
             }
         }
     }
